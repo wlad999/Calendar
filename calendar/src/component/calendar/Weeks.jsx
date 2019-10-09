@@ -1,4 +1,6 @@
 import React from "react";
+import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 
 // const CalendarList = props => {
 //   return <div>CalendarList</div>;
@@ -25,6 +27,8 @@ class Weeks extends React.Component {
 
   getWeekDay = () => {
     let date = new Date(2019, 9, 31);
+    // console.log("DATE", date);
+
     let week = [
       { day: "SUN", num: 0 },
       { day: "MON", num: 0 },
@@ -34,22 +38,27 @@ class Weeks extends React.Component {
       { day: "FRI", num: 0 },
       { day: "SAT", num: 0 }
     ];
+    let dateCopy;
     let numWeekDay = date.getDay();
     let getDateAgo = (date, days) => {
-      let dateCopy = new Date(date);
+      dateCopy = new Date(date);
       dateCopy.setDate(date.getDate() - days);
+      // console.log("dateCopy", dateCopy);
       return dateCopy.getDate();
     };
 
     let newWeek = week.map((el, i) => {
       el.num = getDateAgo(date, numWeekDay - i);
+      el.data = dateCopy;
       return el;
     });
 
     if (this.state.daysWeek.length === 0) {
       this.setState({ daysWeek: newWeek });
     }
-    return console.log(newWeek);
+    if (this.state.daysWeek.length !== 0 && this.state.daysWeek[0].data) {
+      return console.log(this.state.daysWeek[0].data);
+    }
 
     // let month = this.state.month[date.getMonth()];
     // let weekDay = this.state.days[date.getDay()];
@@ -68,25 +77,55 @@ class Weeks extends React.Component {
       display: "flex",
       border: "2px solid grey",
       padding: "3px",
-      // width: "80%",
       "justify-content": "center"
     };
-    let hours = {
-      display: "flex",
-      border: "2px solid grey",
-      padding: "3px",
-      width: "20%",
-      "justify-content": "center",
-      height: "75.5px"
+    let header = {
+      border: "2px solid grey"
+      // padding: "3px"
     };
     this.getWeekDay();
 
     return (
       <>
-        <div style={dayStyle}>
+        <Table>
+          <Thead>
+            <Tr>
+              <Th style={header}>HOURS</Th>
+              {this.state.daysWeek.map(el => (
+                <Th style={header}>
+                  {el.day}/{el.num}
+                </Th>
+              ))}
+            </Tr>
+          </Thead>
+          <Tbody>
+            {this.state.hours.map(el => {
+              return (
+                <Tr style={header}>
+                  <Td>{el}</Td>
+                  {this.state.daysWeek.length !== 0 &&
+                  this.state.daysWeek[0].data
+                    ? this.state.daysWeek.map(el => <Td name={el.data}></Td>)
+                    : null}
+                  {/* <Td></Td> */}
+                  {/* <Td {this.state.daysWeek.length !== 0 && this.state.daysWeek[0].data ? currentDay={this.state.daysWeek[0].data}:null}></Td> */}
+                  {/* <Td></Td>
+                  <Td>drgar</Td>
+                  <Td></Td>
+                  <Td></Td>
+                  <Td>rtg</Td>
+                  <Td>wet</Td> */}
+                </Tr>
+              );
+            })}
+          </Tbody>
+        </Table>
+        {/* <div style={dayStyle}>
           <div style={hours}>
             <div>HOUER</div>
-            {}
+            {this.state.hours.map(el => (
+              <div>{el}</div>
+            ))}
           </div>
           {this.state.daysWeek.map(el => (
             <div>
@@ -97,9 +136,7 @@ class Weeks extends React.Component {
               ))}
             </div>
           ))}
-        </div>
-        <div>Weeks</div>
-        <div>{this.getWeekDay()}</div>
+        </div> */}
       </>
     );
   }
